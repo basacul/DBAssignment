@@ -1,0 +1,88 @@
+---
+title: "Database project assignment"
+author: "Lucas Antelo"
+date: "May 10, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Modeling
+
+###Executive Summary
+--> TODO
+
+###Getting the Data and Exploration
+For this assignment we will use the dataset american-election-tweet.xlsx downloaded form <http://kvv.imp.fu-berlin.de> under the subsection ressources from the database course. In this section we try to explore the data set.
+
+2. Aufgabe: Explorative Datenanalyse
+  1.  Laden Sie sich den Datensatz "american-election-tweets.csv" oder "american-
+      election-tweets.xlsx" aus dem KVV herunter.
+  2.  Schauen Sie sich den Datensatz an und versuchen Sie die Zusammenhange
+      im Datensatz zu verstehen. Der Datensatz enthalt mehr Daten als fur
+      das Projektziel relevant sind.
+  3.  Beschreiben Sie den Datensatz.
+
+```{r overview, warning=FALSE}
+#the data for the assignemnt is in the subfolder /data
+#file <- "data/american-election-tweet.csv"
+#data <- read.csv(file) fails as there are more columns than column names
+library(readxl)
+data <- read_excel("data/american-election-tweets.xlsx")
+#what attributes are available?
+colnames(data)
+#dimension
+dim(data)
+#structur of data
+str(data)
+
+#summary of the data
+summary(data)
+```
+The data set consists of 6126 entries and 11 attributs. We will look deeper into each of these attributes and moreover explore any correlations, distributions and other interesting facts, that we can analyze.
+
+## Anaylzing the the attributes
+
+We have eleven attributes consisting with the following values and characteristics: 
+
+```{r attributes, eval=FALSE }
+unique(data$handle) # "HillaryClinton"  "realDonaldTrump"
+unique(data$text) # many different texts -> further analysis required
+unique(data$is_retweet) # true false
+unique(data$original_author) # 268 different authors -> further analysis required
+range(data$time) # "2016-01-05T03:36:53" "2016-09-28T00:22:34"
+unique(data$in_reply_to_screen_name) 
+# NA "HillaryClinton" "Lesdoggg" "elizabethforma" "MaryKayHenry" "montgomeriefdn" "JLo" "POTUS" "tomcolicchio"  
+unique(data$is_quote_status) # true false
+range(data$retweet_count) # 123 490180
+range(data$favorite_count) # 274 660384
+unique(data$source_url) 
+# "https://studio.twitter.com"                   "http://twitter.com"                          
+# "https://about.twitter.com/products/tweetdeck" "http://twitter.com/download/iphone"          
+# "http://twitter.com/download/android"          "http://twitter.com/#!/download/ipad"         
+# "http://instagram.com"                         "https://mobile.twitter.com"                  
+ 
+unique(data$truncated) # true false
+```
+The data set consist of entries that start on January 5 2016 and ends on September 28 2016. //domain
+
+We see that the attributes
+  handle, is_retweet, is_quote_status and truncated       //domain of each one
+consist of binary values - in other words there only are two possibilities
+
+The attribute text is much more verbose and will need further analysis. //domain
+
+There are 268 unique orignal_author entries. 8 unique in_reply_to_scren_name. //domain 
+
+The range of retweet_count is 123 to 490180.  //not a domain but range is better
+The range of favorite_count is 274 to 660384. //not a domain but range is better
+
+There are 8 unique source_url entries.
+
+## 2. Data Import
+
+## 3. Data Mining and Visualization
