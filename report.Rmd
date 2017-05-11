@@ -1,10 +1,10 @@
 ---
 title: "Database project assignment"
-author: "Lucas Antelo"
+author: "Maximilian Buff, Maximilian Valenza, Lucas Antelo Blanco"
 date: "May 10, 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,74 +14,195 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 1. Modeling
 
 ###Executive Summary
---> TODO
+The data set american-election-tweet.xlsx consists of 6126 entries and 11 attributes. Its eleven attributes are:
+{handle, text, is_retweet, original_author, time, in_reply_to_screen_name, is_quote_status, retweet_count, favorite_count, source_url, truncated}
+
+The data set can be split into two subsets in order to compare between tweets on behalf of HillaryClinton and realDonaldTrump. The attributes original_author and in_reply_to_screen_name include only a few entries such that its importance need to be evaluated. 
+The attribute truncated showed that only 40 tweets were actually truncated, so that we could exclude those fourty ones, but its relevance needs to be evaluated, too, as it could screw the analysis.
+
+To sum up, the data set was complete except for the attributes original_author and in_reply_to_screen_name. The tweets need to be further evaluated for its key words and content, such that we can label them with positive or negative emotions, that could be useful for further evaluation.
+
 
 ###Getting the Data and Exploration
-For this assignment we will use the dataset american-election-tweet.xlsx downloaded form <http://kvv.imp.fu-berlin.de> under the subsection ressources from the database course. In this section we try to explore the data set.
+For this assignment we will use the data set american-election-tweet.xlsx downloaded form <http://kvv.imp.fu-berlin.de> under the subsection ressources from the database course. 
+We downloaded the data manually and look at the basic structure of the data set. With the function summary we get a concise overview about the most relevant structure of the data set.
 
-2. Aufgabe: Explorative Datenanalyse
-  1.  Laden Sie sich den Datensatz "american-election-tweets.csv" oder "american-
-      election-tweets.xlsx" aus dem KVV herunter.
-  2.  Schauen Sie sich den Datensatz an und versuchen Sie die Zusammenhange
-      im Datensatz zu verstehen. Der Datensatz enthalt mehr Daten als fur
-      das Projektziel relevant sind.
-  3.  Beschreiben Sie den Datensatz.
 
-```{r overview, warning=FALSE}
-#the data for the assignemnt is in the subfolder /data
-#file <- "data/american-election-tweet.csv"
-#data <- read.csv(file) fails as there are more columns than column names
+```{r overview, warning=FALSE, cache=TRUE}
 library(readxl)
 data <- read_excel("data/american-election-tweets.xlsx")
-#what attributes are available?
-colnames(data)
-#dimension
-dim(data)
-#structur of data
-str(data)
+#what attributes are available? 11 attributes available
+# colnames(data)
+# handle, text, is_retweet, original_author, time, in_reply_to_screen_name, 
+# is_quote_status, retweet_count, favorite_count, source_url, truncated
+
+# dimension
+# dim(data)) # 6126 X 11
+
+# structure of the data
+# str(data)
 
 #summary of the data
 summary(data)
 ```
-The data set consists of 6126 entries and 11 attributs. We will look deeper into each of these attributes and moreover explore any correlations, distributions and other interesting facts, that we can analyze.
+The data set consists of 6126 entries and 11 attributes. We will look deeper into each of these attributes and moreover explore any correlations, distributions and other interesting facts, that we can analyze. 
 
-## Anaylzing the the attributes
+### Analyzing the the attributes
 
-We have eleven attributes consisting with the following values and characteristics: 
+We have eleven attributes consisting of the following values and characteristics: 
 
-```{r attributes, eval=FALSE }
-unique(data$handle) # "HillaryClinton"  "realDonaldTrump"
-unique(data$text) # many different texts -> further analysis required
-unique(data$is_retweet) # true false
-unique(data$original_author) # 268 different authors -> further analysis required
-range(data$time) # "2016-01-05T03:36:53" "2016-09-28T00:22:34"
-unique(data$in_reply_to_screen_name) 
-# NA "HillaryClinton" "Lesdoggg" "elizabethforma" "MaryKayHenry" "montgomeriefdn" "JLo" "POTUS" "tomcolicchio"  
-unique(data$is_quote_status) # true false
-range(data$retweet_count) # 123 490180
-range(data$favorite_count) # 274 660384
-unique(data$source_url) 
-# "https://studio.twitter.com"                   "http://twitter.com"                          
-# "https://about.twitter.com/products/tweetdeck" "http://twitter.com/download/iphone"          
-# "http://twitter.com/download/android"          "http://twitter.com/#!/download/ipad"         
-# "http://instagram.com"                         "https://mobile.twitter.com"                  
+```{r attributes, warning=FALSE }
+handle <- unique(data$handle) # "HillaryClinton"  "realDonaldTrump"
+
+text <- unique(data$text) # many different texts -> further analysis required
+
+is_retweet <- unique(data$is_retweet) # true false
+
+original_author <- unique(data$original_author) # 268 different authors 
+# -> further analysis required
+
+timeRange <- range(data$time) # "2016-01-05T03:36:53" "2016-09-28T00:22:34"
+
+in_reply_to_screen_name <- unique(data$in_reply_to_screen_name) 
+# NA "HillaryClinton" "Lesdoggg" "elizabethforma" 
+# "MaryKayHenry" "montgomeriefdn" "JLo" "POTUS" "tomcolicchio"  
+
+is_quote_status <- unique(data$is_quote_status) # true false
+
+retweet_countRange <- range(data$retweet_count) # 123 490180
+
+favorite_countRange <- range(data$favorite_count) # 274 660384
+
+
+
+
+
+
+unique_url <- unique(data$source_url) 
+# "https://studio.twitter.com" 
+# "http://twitter.com"                          
+# "https://about.twitter.com/products/tweetdeck" 
+# "http://twitter.com/download/iphone"          
+# "http://twitter.com/download/android"          
+# "http://twitter.com/#!/download/ipad"         
+# "http://instagram.com"                         
+# "https://mobile.twitter.com"                  
  
-unique(data$truncated) # true false
+truncated <- unique(data$truncated) # true false
 ```
-The data set consist of entries that start on January 5 2016 and ends on September 28 2016. //domain
 
-We see that the attributes
-  handle, is_retweet, is_quote_status and truncated       //domain of each one
-consist of binary values - in other words there only are two possibilities
+```{r naValues, eval=FALSE}
+# How many missing values in each attribute from 6126 entries?
+sum(is.na(data$handle)) # 0
+sum(is.na(data$text)) # 0
+sum(is.na(data$is_retweet)) # 0
+sum(is.na(data$original_author)) # 5465
+sum(is.na(data$time)) # 0
+sum(is.na(data$in_reply_to_screen_name)) # 5930
+sum(is.na(data$is_quote_status)) # 0
+sum(is.na(data$retweet_count)) # 0
+sum(is.na(data$favorite_count))  # 0
+sum(is.na(data$source_url)) # 0
+sum(is.na(data$truncated)) # 0
+```
 
-The attribute text is much more verbose and will need further analysis. //domain
 
-There are 268 unique orignal_author entries. 8 unique in_reply_to_scren_name. //domain 
+For further information concerning the attributes, please consult <https://dev.twitter.com/overview/api/tweets>.
 
-The range of retweet_count is 123 to 490180.  //not a domain but range is better
-The range of favorite_count is 274 to 660384. //not a domain but range is better
 
-There are 8 unique source_url entries.
+### Attributes Summary
+
+####handle : char/String
+It probably refers to the acount to which the tweet was posted. There were only two values for this attribute: HillaryClinton or realDonaldTrump. The domain is therefore equal to {HillaryClinton, realDonaldTrump}.
+
+####text : char/String
+Consists of the content of the tweet about only 40 were truncated. The tweets contain simple text, hashtags and further links, such that further analysis is needed. The domain is vast.
+
+####is_retweet : boolean
+This attribute shows if a tweet has been retweeted by the authenticating user and consists of the domain {true, false}.
+
+####original_author : char/String
+Represents the original author of the tweet to one of both handles. From 6126 entries 5465 were non available (na) and its domain consists of 268 unique String values.
+
+
+####time : date (POSIX)
+The entries in the data set start at '2016-01-05 03:36:53' and stop at '2016-09-28 00:22:34' and is ordered in the reverse order such that in the cleaning process it would be reordered chronologically. The domain ranges between these two time points.
+
+
+####in_reply_to_screen_name : char/String
+Contains the screen name of the original Tweet’s author if it is not a reply to a tweet. 5930 entries were na and its domain consists of {NA, HillaryClinton, Lesdoggg, elizabethforma, MaryKayHenry, montgomeriefdn, JLo, POTUS, tomcolicchio}.
+
+####is_quote_status : boolean
+"This field only surfaces when the Tweet is a quote Tweet. This attribute contains the Tweet object of the original Tweet that was quoted" - twitter documentation.
+Domain consists of {true, false}
+
+####retweet_count : int
+How many times the tweet has been retweeted. Its range is between 123 and 490180 without any na's.
+
+####favorite_count : int
+"Indicates approximately how many times this Tweet has been liked by Twitter users" - twitter documentation.
+There are no nas and ranges between 274 and 660384.
+
+####source_url : char/String
+"Utility used to post the Tweet, as an HTML-formatted string. Tweets from the Twitter website have a source value of web." - twitter documenation
+There are 8 unique values, hence its domain consists of {  
+[1] "https://studio.twitter.com"                  
+[2] "http://twitter.com"                          
+[3] "https://about.twitter.com/products/tweetdeck"  
+[4] "http://twitter.com/download/iphone"          
+[5] "http://twitter.com/download/android"         
+[6] "http://twitter.com/#!/download/ipad"         
+[7] "http://instagram.com"                        
+[8] "https://mobile.twitter.com"
+}
+
+####truncated : boolean
+Indicates if the tweet is truncated (true) or not (false). Only 40 entries consisted of turncated tweets, such that an accurate text analysis could be performed.
+Domain consists of {true, false}.
+
+####Conclusion so far
+For the future we have to figure out, how we want to deal with the missing values and moreover if we should exclude some attributes from the data set along the cleaning process.
+
+### Plots
+
+```{r tables, warning=FALSE}
+table(data$handle, data$is_retweet)
+# table(data$handle, data$original_author) 
+# too verbose such that a plot is more convenient
+
+# table(data$original_author, data$is_retweet) 
+# only the true part, but false is always 0
+
+# table(data$truncated) # only 40 tweets were truncated in the dataset
+
+range(table(data$original_author, data$is_retweet)[,2]) 
+# ranges for the orignal_author to is_retweet
+
+table(data$handle, data$is_quote_status)
+```
+
+```{r timeseries, warning=FALSE, cache=TRUE}
+#order data set accoriding from oldest to newest
+data$time <- strptime(data$time, "%Y-%m-%dT%H:%M:%S")
+data <- data[order(data$time),]
+data$time <- as.POSIXct(data$time)
+```
+
+```{r plotSeries, warning=FALSE, cache=TRUE}
+#for 2016!
+library(ggplot2)
+theme_set(theme_bw())
+
+ggplot(aes(x = time, y = retweet_count), data = data) + geom_point()
+
+# ggplot(aes(x = time, y = favorite_count), data = data) + geom_point() 
+# looks similar to retweet_count plot
+
+qplot(handle, retweet_count, data = data)
+
+# favorite count against handle split into source_url
+qplot(handle, favorite_count, data = data, facets = .~ source_url) #aesthetically bad :-(
+```
 
 ## 2. Data Import
 

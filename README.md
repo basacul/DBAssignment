@@ -19,13 +19,12 @@ Project assignment for the database course at the university. In this assignment
       3. Hashtag Netzwerk visualisieren
       4. Häufigkeiten und Auftreten von Hashtags im Verlauf der Zeit visualisieren
       
-#Projektziel
+# Projektziel
 Es soll eine Web-Anwendung entstehen, die die Daten aus dem Datensatz
 "american-election" geeignet visualisiert und das Abfragen von Informationen
-ermoglicht. Typische Abfragen an die Web-Anwendung sollen sein:
+ermöglicht. Typische Abfragen an die Web-Anwendung sollen sein:
 - Welche Tweets waren am wichtigsten?
 - Welche "Hashtags" wurden wann am meisten verwendet?
 - Wann traten insgesamt am meisten "Hashtags" auf?
 - Welche "Hashtags" treten besonders häufig gemeinsam auf?
-- Wie hat sich die Häufigkeit der Verwendung eines speziellen "Hashtags"
-uber die Zeit entwickelt?
+- Wie hat sich die Häufigkeit der Verwendung eines speziellen "Hashtags" über die Zeit entwickelt?
