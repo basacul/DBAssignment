@@ -1,31 +1,53 @@
 ---
-title: "Database project assignment"
-author: "Maximilian Buff, Maximilian Valenza, Lucas Antelo Blanco"
+title: "Database Project"
+author: "Lucas Antelo Blanco, Maximilian Buff, Maximilian Valenza"
 date: "May 10, 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## 1. Modeling
+## Team MadMax
 
-###Executive Summary
+**Maximilian Buff**, born and raised in Berlin, works as front-end developer and is currently enrolled as a Bachelor Computer Science student at the FU Berlin.
+
+**Maximilian Valenza** works in Application Services on software for VW and is currently enrolled as a Bachelor Computer Science student at the FU.
+
+**Lucas Antelo Blanco**, born and raised in Switzerland, spent most of his recent years in the healthcare sector and is currently enrolled as a Bachelor Computer Science student at the FU.
+
+# A. Modeling
+
+##1. Project Goal
+The main purpose of this project consists in building a database from the data set american-election-tweet.xlsx/.csv such that the following constraints are fulfilled:
+
+  1. Which tweets were the most important?  
+  
+  2. Which hashtags were used the most?  
+  
+  3. When did the most hashtags occur?  
+  
+  4. Wich hashtags frequently occur together?  
+  
+  5. How has the frequency of special hashtags developed over time?
+  
+To sum up, the database allows to query for specific information about hashtags and its correlations.
+
+## 2. Exploratory Data Analysis
 The data set american-election-tweet.xlsx consists of 6126 entries and 11 attributes. Its eleven attributes are:
 {handle, text, is_retweet, original_author, time, in_reply_to_screen_name, is_quote_status, retweet_count, favorite_count, source_url, truncated}
 
 The data set can be split into two subsets in order to compare between tweets on behalf of HillaryClinton and realDonaldTrump. The attributes original_author and in_reply_to_screen_name include only a few entries such that its importance need to be evaluated. 
-The attribute truncated showed that only 40 tweets were actually truncated, so that we could exclude those fourty ones, but its relevance needs to be evaluated, too, as it could screw the analysis.
+The attribute truncated showed that only 40 tweets were actually truncated and therefore over 99% of the tweets are complete.
 
-To sum up, the data set was complete except for the attributes original_author and in_reply_to_screen_name. The tweets need to be further evaluated for its key words and content, such that we can label them with positive or negative emotions, that could be useful for further evaluation.
+To sum up, the data set was complete except for the attributes original_author and in_reply_to_screen_name. The tweets need to be evaluated for its key words, content for labeling purposes and especially hashtags for later queries.
 
 
-###Getting the Data and Exploration
-For this assignment we will use the data set american-election-tweet.xlsx downloaded form <http://kvv.imp.fu-berlin.de> under the subsection ressources from the database course. 
-We downloaded the data manually and look at the basic structure of the data set. With the function summary we get a concise overview about the most relevant structure of the data set.
+###2.1. Getting and Exploring the Data
+The data set american-election-tweet.xlsx was manually downloaded form <http://kvv.imp.fu-berlin.de> under the subsection ressources from the database course. In the code sections results are mentioned as comments or displayed below the actual command of the function.
 
 
 ```{r overview, warning=FALSE, cache=TRUE}
@@ -45,11 +67,9 @@ data <- read_excel("data/american-election-tweets.xlsx")
 #summary of the data
 summary(data)
 ```
-The data set consists of 6126 entries and 11 attributes. We will look deeper into each of these attributes and moreover explore any correlations, distributions and other interesting facts, that we can analyze. 
 
-### Analyzing the the attributes
 
-We have eleven attributes consisting of the following values and characteristics: 
+###2.2. Analyzing the Attributes
 
 ```{r attributes, warning=FALSE }
 handle <- unique(data$handle) # "HillaryClinton"  "realDonaldTrump"
@@ -72,11 +92,6 @@ is_quote_status <- unique(data$is_quote_status) # true false
 retweet_countRange <- range(data$retweet_count) # 123 490180
 
 favorite_countRange <- range(data$favorite_count) # 274 660384
-
-
-
-
-
 
 unique_url <- unique(data$source_url) 
 # "https://studio.twitter.com" 
@@ -110,7 +125,8 @@ sum(is.na(data$truncated)) # 0
 For further information concerning the attributes, please consult <https://dev.twitter.com/overview/api/tweets>.
 
 
-### Attributes Summary
+###
+###2.3. Summary of the Attributes
 
 ####handle : char/String
 It probably refers to the acount to which the tweet was posted. There were only two values for this attribute: HillaryClinton or realDonaldTrump. The domain is therefore equal to {HillaryClinton, realDonaldTrump}.
@@ -160,50 +176,215 @@ There are 8 unique values, hence its domain consists of {
 Indicates if the tweet is truncated (true) or not (false). Only 40 entries consisted of turncated tweets, such that an accurate text analysis could be performed.
 Domain consists of {true, false}.
 
-####Conclusion so far
-For the future we have to figure out, how we want to deal with the missing values and moreover if we should exclude some attributes from the data set along the cleaning process.
+### Relations
+We see that there are two values for handle such that we can split the whole data set into two subsets: HillaryClinton and realDonaldTrump. As the goal of the project remains the analysis of the tweets our model assumption focuses on the text, that includes the hashtags. In correlation with the attributes is_retweet or favorite_count we could measure the impact of the tweets and moreover analyze it in conjunction with original_author, in_reply_to_screen_name and source_url. The essential attribute time will be attributed to each tweet. Further exploratory data analysis will identify crucial points in order to adapt our assumptions and model in the next iterations of our project.
 
-### Plots
-
+### Tables and Plots
 ```{r tables, warning=FALSE}
 table(data$handle, data$is_retweet)
 # table(data$handle, data$original_author) 
-# too verbose such that a plot is more convenient
-
 # table(data$original_author, data$is_retweet) 
-# only the true part, but false is always 0
-
 # table(data$truncated) # only 40 tweets were truncated in the dataset
 
-range(table(data$original_author, data$is_retweet)[,2]) 
 # ranges for the orignal_author to is_retweet
+range(table(data$original_author, data$is_retweet)[,2]) 
 
+# represents the distribution of handle's tweets if quoted or not
 table(data$handle, data$is_quote_status)
 ```
 
-```{r timeseries, warning=FALSE, cache=TRUE}
+```{r timeseries, warning=FALSE, cache=TRUE, echo=FALSE}
 #order data set accoriding from oldest to newest
 data$time <- strptime(data$time, "%Y-%m-%dT%H:%M:%S")
 data <- data[order(data$time),]
 data$time <- as.POSIXct(data$time)
 ```
 
-```{r plotSeries, warning=FALSE, cache=TRUE}
+```{r hidden, echo=FALSE}
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+```
+```{r plotSeries, warning=FALSE, cache=TRUE, echo=FALSE}
 #for 2016!
 library(ggplot2)
 theme_set(theme_bw())
 
-ggplot(aes(x = time, y = retweet_count), data = data) + geom_point()
+g1 <- ggplot(aes(x = time, y = retweet_count), data = data) + 
+      geom_point() +
+      ggtitle("Distribution of Retweet Count")
 
-# ggplot(aes(x = time, y = favorite_count), data = data) + geom_point() 
-# looks similar to retweet_count plot
+g2 <- ggplot(aes(x = time, y = favorite_count), data = data) + 
+      geom_point() +
+      ggtitle("Distribution of Favorite Count")
 
-qplot(handle, retweet_count, data = data)
+
+g3 <- qplot(handle, retweet_count, data = data) + 
+      labs(title="Retweet Count between Handles")
 
 # favorite count against handle split into source_url
-qplot(handle, favorite_count, data = data, facets = .~ source_url) #aesthetically bad :-(
+g4 <- qplot(handle, favorite_count, data = data, facets = .~ source_url) +
+      labs(title="Favorite Count between Handles \n Compared to URL Sources") + 
+      theme(axis.text.x = element_blank()) +
+      xlab("HillaryClinton VS realDonaldTrump")
+
+multiplot(g1, g2, g3, g4, cols=2)
 ```
 
-## 2. Data Import
 
-## 3. Data Mining and Visualization
+## 3. ER Model
+
+Based on our assumptions we decided to build the following ER Model [Figure 1], that puts the emphasis on the tweet text and relates the other attributes around it in an adequate fashion. This allows to query for information in the tweets that will mostly relate to the hashtags. 
+The object Content represents the text of the tweet and may include several hashtags, links, targethandle. The rest of the content will be simple plain text without any special characters.
+The handle and time attributes could be used to uniquely identify the tweets. If it is determined that a tweet was in response to another one, than the attribute reply_handle will be associated to it. Finally, if the tweet is a retweet, it the attribute original_handle will be included to the tweet representing the original author.
+The exact evaluation process for the hashtags relating to different other hashtags will take place in the application. The results will be either cached or additionally attributed to the hashtag object
+
+![ER-Model](img/er.png)
+
+## 4. Relational Model
+The tweet with all its elements will be considered as a unit. The boolean queries for is_retweet (alias retweet) and in_reply_to_screen_name (alias reply) will be externalized in order to optimize queries for speed.
+The content is furthermore associated to four classifiers (text without special characters, hashtag, link and target handle) that allows to store the data in an organized fashion. This allows the system to optimize its queries for such content.
+The attributes is_quote_status and truncated could be excluded in our use case, but for query purposes they will remain in our model as one attribute, especially as we expect that the user will unlikely postulate such queries.
+
+```{r relationalModel, warning=FALSE, eval=FALSE}
+Tweet(DateTime, FavouriteCount, SourceURL, QuoteStatus, Truncated, RetweetCount, Handle),
+Content(ID),
+Text(ID),
+Hashtag(ID, hashtag),
+Link(ID, link),
+TargetHandle(ID, targetHandle),
+
+Access to the content:
+Content is in Tweet(ID, DateTime, Handle)
+
+Boolean queries with a loop, if many elements occur:
+Content_Text(Content_ID, Text_ID),   
+Content_Hashtag(Content_ID, Hashtag_ID),  
+Content_Link(Content_ID, Link_ID),  
+Content_TargetHandle(Content_ID, TargetHandle_ID),  
+
+Boolean queries: 
+Tweet is Retweet(DateTime, Handle, OriginalHandle)
+Tweet is a Reply(DateTime, Handle, ReplyHandle)
+```
+
+
+## 5. Database Creation
+```{r createDB, warning=FALSE, eval=FALSE}
+createdb Election
+```
+
+# B. Data Import
+
+In the second iteration the goals consist in 
+
+1. Creating the database schema  
+2. Cleaning the data  
+3. Importing the data  
+4. Running the web server
+
+
+## 1. Create the Database Schema
+```{r createTables, warning=FALSE, eval=FALSE}
+create table Tweet(
+    id integer Primary Key,
+    created timestamp not null,
+    favouriteCount integer not null,
+    sourceUrl character varying(50) not null,
+    quoteStatus boolean not null,
+    truncated boolean not null,
+    retweetCount integer not null,
+    handle character varying(15) not null
+);
+
+create table Content(
+  id integer Primary key,
+  idTweet integer references Tweet (id)
+);
+
+create table Text(
+  id integer Primary key,
+  idContent integer references Content (id),
+  plaintext text not null
+);
+
+create table Hashtag(
+  id integer Primary key,
+  idContent integer references Content (id),
+  hashtag character varying(20) not null
+);
+
+create table Link(
+  id integer Primary key,
+  idContent integer references Content (id),
+  link character varying(45) not null
+);
+
+create table TargetHandle(
+  id integer Primary key,
+  idContent integer references Content (id),
+  targetHandle character varying(30) not null
+);
+
+
+create table Retweet(
+  id integer Primary key,
+  idTweet integer references Tweet (id),
+  originalHandle character varying(45) not null
+);
+
+create table Reply(
+  idTweet integer references Tweet (id),
+  replyHandle varchar(15) not null
+);
+
+```
+
+## 2. Clean the Data
+
+## 3. Import the Data
+
+## 4. Run the Web Server
+
