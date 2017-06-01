@@ -1,19 +1,19 @@
 # DBAssignment
 Project assignment for the database course at the university. In this assignment we go through three steps:
 
-  1. Modellierung
+  A. Modellierung
       1. Explorative Datenanalyse
       2. ER-Modell
       3. Relationales Modell
       4. Datenbank erstellen
       
-  2. Datenimport
+  B. Datenimport
       1. Datenbankschema erstellen
       2. Daten bereinigen
       3. Daten importieren
       4. Webserver
       
-  3. Data Mining und Visualisierung
+  C. Data Mining und Visualisierung
       1. Metrik für Aehnlichkeit zwischen zwei Hashtags entwickeln
       2. Clusteranalyse durchführen
       3. Hashtag Netzwerk visualisieren
@@ -28,3 +28,5 @@ ermöglicht. Typische Abfragen an die Web-Anwendung sollen sein:
 - Wann traten insgesamt am meisten "Hashtags" auf?
 - Welche "Hashtags" treten besonders häufig gemeinsam auf?
 - Wie hat sich die Häufigkeit der Verwendung eines speziellen "Hashtags" über die Zeit entwickelt?
+
+Check http://rpubs.com/basacul/db for the current report.
