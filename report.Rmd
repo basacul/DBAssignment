@@ -3,8 +3,8 @@ title: "Database Project"
 author: "Lucas Antelo Blanco, Maximilian Buff, Maximilian Valenza"
 date: "May 10, 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -395,12 +395,16 @@ Moreover the java class DataSanitizer populates the tables after reading each cl
 Link to the java files: <https://github.com/basacul/DBAssignment/tree/master/java>
 
 ## 4. Run the Web Server
-### 1. PostgreSQL
-```{r important, warning=FALSE, eval=FALSE}
-Put the file 'postgresql-42.1.1.jar' or the newest from 'https://jdbc.postgresql.org/download.html' into your extensions folder of your java install path:
 
-	( For Mac f.e. )
-	cd /Library/Java/Extensions/
+### 1. PostgreSQL
+
+```{r important, warning=FALSE, eval=FALSE}
+Put the file 'postgresql-42.1.1.jar' or the newest from 
+'https://jdbc.postgresql.org/download.html' into your extensions folder 
+of your java install path:
+
+( For Mac f.e. )
+cd /Library/Java/Extensions/
 ```
 
 
@@ -436,15 +440,13 @@ homebrew install php55
 ```{r configuration, warning=FALSE, eval=FALSE}
 Change the Apache httpd.conf
 	
-Delete '#' of line '# 
-LoadModule php5_module    
-libexec/apache2/libphp5.so'
-
+Delete '#' of line 
+'#LoadModule php5_module libexec/apache2/libphp5.so'
 
 OR ( copy and paste the following line into the conf file)
 
-
 LoadModule php5_module    
+
 $HOMEBREW_PREFIX/Cellar/php55/5.5.9/libexec/apache2/libphp5.so
 ```	
 	

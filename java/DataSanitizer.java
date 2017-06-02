@@ -113,15 +113,9 @@ public class DataSanitizer {
 				breakLoop = false;
 			}
 
-			breakLoop = false;
+			//replaces the T in the time string with an empty space " "
+			line.set(4, (line.get(4).substring(0,10) + " " + line.get(4).substring(11, line.get(4).length() - 1)));
 
-			for(int u = 0; u < line.get(4).length() && !breakLoop; u++){
-				if(line.get(4).charAt(u) == 'T'){
-					line.set(4, (line.get(4).substring(0,4) + " " + line.get(4).substring(5, line.get(4).length() - 1)));
-					breakLoop = true;
-				}
-			}
-			System.out.println(line.get(4));
 			//populate the tables in the database Election
 			try{
 
