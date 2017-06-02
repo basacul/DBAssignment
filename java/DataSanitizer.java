@@ -31,7 +31,7 @@ public class DataSanitizer {
 
 		//for jdbc
 		Connection c = null;
-	  Statement s = null;
+		Statement s = null;
 
 		//for retrieving the hashtags
 		String plainText;
@@ -99,12 +99,16 @@ public class DataSanitizer {
 
 			//retrieve the links and dynamically update length condition in outer for loop
 			for(int w = 0; w < plainText.length(); w++){
-				diff = w + 5;
-				if(diff < plainText.length() && plainText.substring(w,diff).equalsIgnoreCase("http")){
+				diff = w + 4;
+				if(diff < plainText.length() &&
+					plainText.charAt(w) == 'h' &&
+					plainText.charAt(w+1) == 't' &&
+					plainText.charAt(w+2) == 't' &&
+					plainText.charAt(w+3) == 'p'){
 					for(int e = w; e < plainText.length() && !breakLoop; e++){
 						if(plainText.charAt(e) == ' ' || plainText.charAt(e) == ','){
 							links.add(plainText.substring(w, e));
-							System.out.println(plainText.substring(w, e));
+							//System.out.println(plainText.substring(w, e));
 							plainText = plainText.substring(0,w) + plainText.substring(e, plainText.length() - 1);
 							breakLoop = true;
 						}
@@ -113,6 +117,9 @@ public class DataSanitizer {
 				breakLoop = false;
 			}
 
+			/*for(int z = 0; z < links.size(); z++){
+				System.out.println(links.get(z));
+			}*/
 			//replaces the T in the time string with an empty space " "
 			line.set(4, (line.get(4).substring(0,10) + " " + line.get(4).substring(11, line.get(4).length() - 1)));
 
