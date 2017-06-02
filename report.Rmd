@@ -382,17 +382,77 @@ create table Reply(
 
 ```
 
-Link to the sql files: <>
+Link to the sql files: <https://github.com/basacul/DBAssignment/tree/master/sql>
 
 ## 2. Clean the Data
 The cleaning of the data is done by the java class DataSanitizer which reads the american-election-tweet.csv file, cleans it and saves it in a new data set sanitized_american_election_tweet.csv. 
 
-Link to the java files: <>
+Link to the java files: <https://github.com/basacul/DBAssignment/tree/master/java>
 
 ## 3. Import the Data
 Moreover the java class DataSanitizer populates the tables after reading each cleaned line from the data set and populates the tables which were declared in section 1.Creating the database schema.
 
-Link to the java files: <>
+Link to the java files: <https://github.com/basacul/DBAssignment/tree/master/java>
 
 ## 4. Run the Web Server
+### 1. PostgreSQL
+```{r important, warning=FALSE, eval=FALSE}
+Put the file 'postgresql-42.1.1.jar' or the newest from 'https://jdbc.postgresql.org/download.html' into your extensions folder of your java install path:
+
+	( For Mac f.e. )
+	cd /Library/Java/Extensions/
+```
+
+
+
+#### 1.1 start your postgres
+```{r postgres, warning=FALSE, eval=FALSE}
+( For Mac f.e. with lunchy via brew)
+lunchy start postgres
+```
+	
+
+
+#### 1.2 Connect the DB in Java
+```{r connectJDBC, warning=FALSE, eval=FALSE}
+IMPORTANT: Make sure your User ist Admin in Postgres.
+( CHECK THIS VIA '\du' if you are in psql)
+```
+
+	
+
+### 2. Install Webserver ( on Mac ):
+```{r installWebServer, warning=FALSE, eval=FALSE}
+sudo ApacheCTL start
+```
+	
+#### 2.1 Install php with homebrew
+```{r installHomebrew, warning=FALSE, eval=FALSE}
+homebrew install php55
+```	
+
+
+#### 2.2 
+```{r configuration, warning=FALSE, eval=FALSE}
+Change the Apache httpd.conf
+	
+Delete '#' of line '# 
+LoadModule php5_module    
+libexec/apache2/libphp5.so'
+
+
+OR ( copy and paste the following line into the conf file)
+
+
+LoadModule php5_module    
+$HOMEBREW_PREFIX/Cellar/php55/5.5.9/libexec/apache2/libphp5.so
+```	
+	
+
+#### 2.3 Restart Apache
+```{r restart apache, eval=FALSE, warning=FALSE}
+sudo apachectl restart
+```
+
+
 

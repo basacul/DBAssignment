@@ -44,16 +44,18 @@ public class DataSanitizer {
 
 		try{
 			Class.forName("org.postgresql.Driver");
+
 			c = DriverManager.getConnection(
-				"jdbc:postgresql://localhost:5432/Election",
-				"postgres", "postgres");
+				"jdbc:postgresql://[::1]:5432/Election",
+ 				"postgres", "postgres");
 
-      s = c.createStatement();
+				s = c.createStatement();
 
+				System.out.println("success");
 		}catch(Exception e){
 			System.out.println("Unlucky?" + e.getMessage());
-			//System.exit(0);
 		}
+
 
 		// Skip first line (handle,text,is_retweet,...
 		if (scanner.hasNext()) {
@@ -82,7 +84,6 @@ public class DataSanitizer {
 					for(int e = w; e < plainText.length() && !breakLoop; e++){
 						if(plainText.charAt(e) == ' ' || plainText.charAt(e) == ','){
 							hashtags.add(plainText.substring(w, e));
-							//System.out.println(plainText.substring(w, e));
 							plainText = plainText.substring(0,w) + plainText.substring(e+1, plainText.length() - 1);
 							breakLoop = true;
 						}
@@ -112,6 +113,15 @@ public class DataSanitizer {
 				breakLoop = false;
 			}
 
+			breakLoop = false;
+
+			for(int u = 0; u < line.get(4).length() && !breakLoop; u++){
+				if(line.get(4).charAt(u) == 'T'){
+					line.set(4, (line.get(4).substring(0,4) + " " + line.get(4).substring(5, line.get(4).length() - 1)));
+					breakLoop = true;
+				}
+			}
+			System.out.println(line.get(4));
 			//populate the tables in the database Election
 			try{
 
@@ -123,13 +133,13 @@ public class DataSanitizer {
 						s.executeUpdate("INSERT INTO Hashtag (Content_id, hashtag) VALUES ('" + i + "' , '" + hashtags.get(q) + "')");
 					}
 
-					for(int q = 0; q < hashtags.size(); q++){
+					for(int q = 0; q < links.size(); q++){
 						s.executeUpdate("INSERT INTO Link (Content_id, link) " + "VALUES ('" + i + "', '" + links.get(q) + "')");
 					}
 
 					s.executeUpdate("INSERT INTO TargetHandle (Content_id, targetHandle) VALUES ('"  + i + "', '" + line.get(0) + "')");
-    			s.executeUpdate("INSERT INTO Retweet (Tweet_id, originalHandle) " + "VALUES ('" + i + "', '" + line.get(3) + "')");
-    			s.executeUpdate("INSERT INTO Reply (Tweet_id, replyHandle) VALUES ('" + i + "', '" + line.get(5) + "')");
+    			s.executeUpdate("INSERT INTO Retweet (id, Tweet_id, originalHandle) " + "VALUES (" + i + ", SELECT id FROM Tweet WHERE id=" + i + ", '" + line.get(3) + "')");
+    			s.executeUpdate("INSERT INTO Reply (Tweet_id, replyHandle) " + "VALUES ( SELECT id FROM Tweet WHERE id=" + i + ", '" + line.get(5) + "')");
 
 			}catch(Exception e){
 				//System.out.println("Still unlucky?" + e.getMessage());
