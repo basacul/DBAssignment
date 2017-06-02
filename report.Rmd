@@ -382,9 +382,17 @@ create table Reply(
 
 ```
 
+Link to the sql files: <>
+
 ## 2. Clean the Data
+The cleaning of the data is done by the java class DataSanitizer which reads the american-election-tweet.csv file, cleans it and saves it in a new data set sanitized_american_election_tweet.csv. 
+
+Link to the java files: <>
 
 ## 3. Import the Data
+Moreover the java class DataSanitizer populates the tables after reading each cleaned line from the data set and populates the tables which were declared in section 1.Creating the database schema.
+
+Link to the java files: <>
 
 ## 4. Run the Web Server
 
