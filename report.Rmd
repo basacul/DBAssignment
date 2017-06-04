@@ -330,7 +330,7 @@ In the second iteration the goals consist in
 ```{r createTables, warning=FALSE, eval=FALSE}
 create table Tweet(
     id integer Primary Key,
-    created timestamp not null,
+    datetime timestamp not null,
     favouriteCount integer not null,
     sourceUrl character varying(50) not null,
     quoteStatus boolean not null,
@@ -436,10 +436,8 @@ homebrew install php55
 ```	
 
 
-#### 2.2 
+#### 2.2 Change the Apache httpd.conf
 ```{r configuration, warning=FALSE, eval=FALSE}
-Change the Apache httpd.conf
-	
 Delete '#' of line 
 '#LoadModule php5_module libexec/apache2/libphp5.so'
 
