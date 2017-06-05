@@ -6,24 +6,27 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.ArrayList;
 import java.sql.*;
-import java.util.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
 
 
 public class DataSanitizer {
 	private static final String FILESYSTEM_SEPARATOR = FileSystems.getDefault().getSeparator();
 	private static final String OUTPUT_FILE_PREFIX = "sanitized_";
 	private static CSVParser csvParser;
+	
+	//Primary key for the Tweet and as Foreign Key for all others
 	private static int i = 0;
+	//Primary key for the Hashtag table
 	private static int hashtagID = 0;
+	//Primary key for the Link table
 	private static int linkID = 0;
 
 	/*tested the number of errors thrown along the population of the database election
 	* which was used to test and count the number of erroneous entries along the
-	* sanitization process
+	* sanitization process or as a simple feedback tool for further investigation
 	*/
 	private static int error = 0;
 
@@ -48,9 +51,9 @@ public class DataSanitizer {
 				"jdbc:postgresql://[::1]:5432/Election",
  				"admin", "admin");
 
-				s = c.createStatement();
+			s = c.createStatement();
 
-				System.out.println("success");
+			System.out.println("success");
 		}catch(Exception e){
 			System.out.println("Unlucky?" + e.getMessage());
 		}
@@ -71,7 +74,7 @@ public class DataSanitizer {
 				continue;
 			}
 
-			//populates the tables in the database election with the entries in the actual line
+			//cleans further the data and populates the tables in the database election line by line
 			populateDB(line, s);
 
 			// Append "("
@@ -100,7 +103,9 @@ public class DataSanitizer {
 			System.out.println(e.getMessage());
 			System.out.println("Failure");
 		}
-		System.out.println("Number of lines corrupted lines : " + error );
+		
+		System.out.println("Number of corrupted lines : " + error );
+		
 		// Close I/O
 		scanner.close();
 		buffWriter.close();
@@ -108,17 +113,12 @@ public class DataSanitizer {
 	}
 
 	private static void populateDB(List<String> line, Statement s){
-		//for retrieving the hashtags and links
+		//for retrieving the hashtags and links and working on plainText
 		String plainText = line.get(1);
 		ArrayList<String> hashtags = new ArrayList<String>();
 		ArrayList<String> links = new ArrayList<String>();
-
-		//for the id in Tweet and much easier to compute and retrieve
-
-
-		//hashtag retrieved go to next iteration
+		//if hashtag was retrieved go to next iteration
 		boolean breakLoop = false;
-
 
 		for(int c = 0;c < plainText.length();c++){
 			if(plainText.charAt(c) == '\''){
@@ -153,10 +153,8 @@ public class DataSanitizer {
 				plainText.charAt(w+2) == 't' &&
 				plainText.charAt(w+3) == 'p'){
 				for(int e = w; e < plainText.length() && !breakLoop; e++){
-					// System.out.println("links");
 					if(plainText.charAt(e) == ' ' || plainText.charAt(e) == ','  || plainText.charAt(e) == '\'' || e +1 == plainText.length()){
 						links.add(plainText.substring(w, e));
-						// System.out.println(plainText.substring(w, e));
 						w = e;
 						breakLoop = true;
 					}
@@ -164,20 +162,15 @@ public class DataSanitizer {
 			}
 			breakLoop = false;
 		}
+	
+	  //Time string is cleaned by replacing 'T' with ' '	
 		line.set(4, (line.get(4).substring(0,10) + " " + line.get(4).substring(11, line.get(4).length() - 1)));
-		//System.out.println(line.get(4));
+	
 		//populate the tables in the database Election
 		try{
-			// try{
-			// 	 s.executeUpdate("INSERT INTO Text (id, idContent, plaintext) " + "VALUES ('" + i + "','" + i + "', '" + plainText + "')");
-
-			// 	 }catch(Exception e){
-			// 	 		System.out.println("What?");
-			// 	  			return;
-			// 	  		}
-  			s.executeUpdate("INSERT INTO Tweet (id, datetime, favouriteCount, sourceUrl, quoteStatus, truncated, retweetCount, handle) VALUES ('" + i + "','" + line.get(4) + "', '" + line.get(8) + "', '" + line.get(9) + "', " + line.get(6) + ", " + line.get(10) + ", " + line.get(7) + ", '" + line.get(0) + "')");
+  		s.executeUpdate("INSERT INTO Tweet (id, datetime, favouriteCount, sourceUrl, quoteStatus, truncated, retweetCount, handle) VALUES ('" + i + "','" + line.get(4) + "', '" + line.get(8) + "', '" + line.get(9) + "', " + line.get(6) + ", " + line.get(10) + ", " + line.get(7) + ", '" + line.get(0) + "')");
 			s.executeUpdate("INSERT INTO Content (id, idTweet)" + "VALUES ('" + i + "', '" + i + "')" );
-  			s.executeUpdate("INSERT INTO Text (id, idContent, plaintext) " + "VALUES ('" + i + "','" + i + "', '" + plainText + "')");
+  		s.executeUpdate("INSERT INTO Text (id, idContent, plaintext) " + "VALUES ('" + i + "','" + i + "', '" + plainText + "')");
 
 			for(int q = 0; q < hashtags.size(); q++){
 				s.executeUpdate("INSERT INTO Hashtag (id, idContent, hashtag) VALUES ('" + (hashtagID++) + "' , '" + i + "' , '" + hashtags.get(q) + "')");
@@ -188,8 +181,8 @@ public class DataSanitizer {
 			}
 
 			s.executeUpdate("INSERT INTO TargetHandle (id, idContent, targetHandle) VALUES ('"  + i + "','"  + i + "', '" + line.get(0) + "')");
-  			s.executeUpdate("INSERT INTO Retweet (id, idTweet, originalHandle) " + "VALUES ( '"  + i + "','" + i + "', '" + line.get(3) + "')");
-  			s.executeUpdate("INSERT INTO Reply (idTweet, replyHandle) " + "VALUES ('" + i + "', '" + line.get(5) + "')");
+  		s.executeUpdate("INSERT INTO Retweet (id, idTweet, originalHandle) " + "VALUES ( '"  + i + "','" + i + "', '" + line.get(3) + "')");
+  		s.executeUpdate("INSERT INTO Reply (idTweet, replyHandle) " + "VALUES ('" + i + "', '" + line.get(5) + "')");
 
 		}catch(Exception e){
 			System.out.println("Still unlucky?" + e.getMessage());
