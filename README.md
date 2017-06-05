@@ -2,22 +2,22 @@
 Project assignment for the database course at the university. In this assignment we go through three steps:
 
   A. Modeling
-      1. Exploratory Data Analysis
-      2. ER Model
-      3. Relational Model
-      4. Database Creation 
+      1. Exploratory Data Analysis  
+      2. ER Model   
+      3. Relational Model  
+      4. Database Creation   
       
   B. Datenimport
-      1. Create The Database Schema
-      2. Clean The Data
-      3. Import The Data
-      4. Establish the Web Server
+      1. Create The Database Schema   
+      2. Clean The Data   
+      3. Import The Data  
+      4. Establish the Web Server  
       
   C. Data Mining And Visualization
-      1. Develop A Metric And Similarity Between Two Hashatags
-      2. Conduct Cluster Analysis
-      3. Hashtag Network Visualization
-      4. Visualization Of Occurrences And Incidences Of Hashtags In The Course Of Time
+      1. Develop A Metric And Similarity Between Two Hashatags  
+      2. Conduct Cluster Analysis  
+      3. Hashtag Network Visualization  
+      4. Visualization Of Occurrences And Incidences Of Hashtags In The Course Of Time   
       
 # Projektziel
 The main purpose of this project consists in building a database from the data set american-election-tweet.xlsx/.csv such that the following constraints are fulfilled:
