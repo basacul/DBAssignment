@@ -394,7 +394,7 @@ Moreover the java class DataSanitizer populates the tables after reading each cl
 
 Link to the java files: <https://github.com/basacul/DBAssignment/tree/master/java>
 
-## 4. Run the Web Server
+## 4. Establish the Web Server
 
 ### 1. PostgreSQL
 
