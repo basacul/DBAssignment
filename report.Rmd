@@ -1,6 +1,6 @@
 ---
 title: "Database Project"
-author: "Lucas Antelo Blanco, Maximilian Buff, Maximilian Valenza"
+author: "basacul"
 date: "May 10, 2017"
 output:
   pdf_document: default
@@ -11,13 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Team MadMax
-
-**Maximilian Buff**, born and raised in Berlin, works as front-end developer and is currently enrolled as a Bachelor Computer Science student at the FU Berlin.
-
-**Maximilian Valenza** works in Application Services on software for VW and is currently enrolled as a Bachelor Computer Science student at the FU.
-
-**Lucas Antelo Blanco**, born and raised in Switzerland, spent most of his recent years in the healthcare sector and is currently enrolled as a Bachelor Computer Science student at the FU.
 
 # A. Modeling
 
