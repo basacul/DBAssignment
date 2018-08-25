@@ -19,7 +19,8 @@ Project assignment for the database course at the university. In this assignment
       3. Hashtag Network Visualization  
       4. Visualization Of Occurrences And Incidences Of Hashtags In The Course Of Time   
       
-# Projektziel
+# Goal of the Project
+
 The main purpose of this project consists in building a database from the data set american-election-tweet.xlsx/.csv such that the following constraints are fulfilled:
 
   1. Which tweets were the most important?  

@@ -3,8 +3,8 @@ title: "Database Project"
 author: "basacul"
 date: "May 10, 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -448,4 +448,29 @@ sudo apachectl restart
 ```
 
 
+# C. Data Mining And Visualization
+
+## 1. Develop A Metric And Similarity Between Two Hashatags And Conduct Cluster Analysis (German)
+
+Wir	haben	die	Hashtags	auf	Ähnlichkeit	der	Tweet-Inhalte,	also	dem	gesamten	Kontext, sowie	das	Auftreten	der	Hashtags	untereinander	in	Verbindung	gesetzt. Leider	führt	bei	uns	k-Means	zu	einem	Ergebnis,	welches	sich	kaum	darstellen	lässt	und	Fehler	beinhaltet	(wir	haben	unmengen	von	0-Werten),	weshalb	wir	von	einer	Visualisierung abgesehen	haben	(Datensatz	mit	über	140k	Sätzen/Nodes).	Die	Visualisierung	nehmen	wir	in Aufgabe	2	vor.	Hier	haben	wir	unterschiedliche	Darstellungen	gewählt.	Näher	werden	die	in Aufgabe	2	und	im	Vortrag	besprochen.	
+Die	[Code Dateien](https://github.com/basacul/DBAssignment)	sind	unserem	Auftritt	und	dem	git	beigefügt	und	können	dort eingesehen werden.
+
+## 2. Hashtag Network Visualization (German) 
+
+Wir	haben	SigmaJS	heruntergeladen	und	mit	ihren	Features	die	Hashtag-Visualisierung durchgeführt.	Wir	haben	verschiedene	Darstellungen	ausprobiert	mit	zufälliger	Anordnung	der	Hashtags	und	im	Zusammenhang	mit	ihrer	Zeitachse	und	Frequenz.		
+
+![Visualization of the hashtag network](img/hashtagNetwork.png)
+
+In	dieser	Darstellung	werden	die	Hashtags	nur	einmal	aufgeführt	und	die	Kanten	sind	mit weiteren	Hashtags	verbunden,	die	im	gleichen	Tweet	erwähnt	werden.	Die	Anordnung	der	Punkte	wird	mithilfe	eines	Randomgenerators	erzeugt,	wodurch	die	ganze	Bildfläche	besser ausgenutzt	wird	und	angenehmer	zu	betrachten	ist.	
+
+## 3. Visualization Of Occurrences And Incidences Of Hashtags In The Course Of Time (German)
+
+![Visualization of the hashtag network](img/hashtagNetworkOrganized.png)
+
+In	dieser	Darstellung	werden	die	alle	Hashtags	nach	Häufigkeit	des	Auftretens	im	zeitlichen	Verlauf	dargestellt.	Die	imaginäre	x-Achse	stellt	die	Zeitachse	von	Januar	bis	September	dar	und	die	imaginäre	y-Achse	die	Anzahl	ihres	Auftretens.	Die	Kanten	widerspiegeln	die	gleiche	Bedeutung	wie	im	ersten	Bild.	
+Die	schwach	dargestellte	Linie	im	oberen	rechten	Quadranten	sind	nicht	durch	Kanten	verbunden, sondern	sind	alle	alleinstehende	Hashtags	die	kumuliert	eine	Linie	darstellen.	
+
+![Occurences of hashtags over in the course of time](img/plot.png)
+
+In	dieser	Graphik	haben	wir	den	Code	aus	Übung	3	wiederverwendet	und	ihn	im	Zusammenhang	der	neuen	Daten	angepasst.	Die	Daten	werden	durch	eine	Datenbankanfrage	mithilfe	von	psycopg2	in Python	generiert	und	sie	danach	in	eine	json	Datei	gespeichert.	Die	Daten	beinhalten	zwei	Attribute	(Hashtag	und	Monat)	welche	danach	durch	flot-master	benutzt	werden.	Dabei	haben	wir	durch	ein	Dropdown	Menu	die	Möglichkeit	erzeugt,	die	Häufigkeitsdarstellung	verschiedener	Hashtags	darstellen	zu	lassen.		
 
