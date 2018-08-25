@@ -35,4 +35,4 @@ The main purpose of this project consists in building a database from the data s
   
 To sum up, the database allows to query for specific information about hashtags and its correlations.
 
-Check the current report at <http://rpubs.com/basacul/db>. 
+Check the current report at <http://rpubs.com/basacul/hashtags>. 
